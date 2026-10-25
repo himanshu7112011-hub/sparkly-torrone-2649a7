@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Birthday Gift Request ❤️</title>
+<style>
+  :root { --pink:#ff4f87; --purple:#7257e8; --ink:#28243a; }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; min-height:100vh; display:grid; place-items:center; padding:18px;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:linear-gradient(135deg,#ffe3ec,#eee7ff 55%,#e2f5ff); color:var(--ink);
+  }
+  .card {
+    width:min(100%,430px); min-height:450px; padding:30px 23px; border-radius:28px;
+    background:#ffffffed; box-shadow:0 18px 55px #59408022; text-align:center;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+  }
+  .emoji { font-size:54px; margin-bottom:12px; }
+  h1 { font-size:clamp(25px,7vw,34px); line-height:1.2; margin:0 0 16px; }
+  p { font-size:17px; line-height:1.6; margin:0 0 22px; }
+  .phone { font-size:25px; font-weight:800; color:#5a43ce; margin:5px 0 18px; }
+  .buttons { width:100%; display:flex; flex-direction:column; gap:12px; margin-top:8px; }
+  button {
+    border:0; border-radius:16px; padding:15px 18px; font-size:18px; font-weight:750;
+    cursor:pointer; width:100%; transition:transform .12s ease;
+  }
+  button:active { transform:scale(.98); }
+  .yes { color:white; background:linear-gradient(90deg,var(--pink),var(--purple)); }
+  .no { background:#f0edf7; color:#39334d; }
+  .small { font-size:13px; opacity:.72; margin-top:22px; }
+  .hidden { display:none; }
+  .result { font-size:16px; background:#f7f3ff; border-radius:14px; padding:12px; margin-top:16px; width:100%; }
+</style>
+</head>
+<body>
+<main class="card" aria-live="polite">
+  <section id="page1">
+    <div class="emoji">🎂🎁</div>
+    <h1>Mera birthday aa raha hai!</h1>
+    <p>Papa, birthday par mujhe ek gift chahiye. ❤️<br>Aap meri request ek baar sunenge?</p>
+    <div class="buttons"><button class="yes" onclick="showPage(2)">OK 😊</button></div>
+  </section>
+
+  <section id="page2" class="hidden">
+    <div class="emoji">📱✨</div>
+    <h1>Ek birthday gift? ❤️</h1>
+    <div class="phone">Moto Edge 70 Fusion</div>
+    <p>Papa, kya aap mujhe birthday par ye phone gift kar sakte hain? Agar budget mein possible na ho, toh main aapki baat samjhunga.</p>
+    <div class="buttons">
+      <button class="yes" onclick="choose('Moto Edge 70 Fusion','Yes')">Yes ❤️</button>
+      <button class="no" onclick="showPage(3)">No</button>
+    </div>
+  </section>
+
+  <section id="page3" class="hidden">
+    <div class="emoji">📱💙</div>
+    <h1>Ek aur option, Papa?</h1>
+    <div class="phone">Moto Edge 70</div>
+    <p>Agar Fusion possible nahi hai, toh kya aap Moto Edge 70 gift karne ke baare mein soch sakte hain?</p>
+    <div class="buttons">
+      <button class="yes" onclick="choose('Moto Edge 70','Yes')">Yes ❤️</button>
+      <button class="no" onclick="showPage(4)">No</button>
+    </div>
+  </section>
+
+  <section id="page4" class="hidden">
+    <div class="emoji">🥹💗</div>
+    <h1>Papa, please ek baar soch lijiye</h1>
+    <p>Ye gift mere liye bahut special hoga. Lekin main aapki majboori aur budget bhi samajhta hoon. Kya hum iske baare mein baat kar sakte hain?</p>
+    <div class="buttons">
+      <button class="yes" onclick="choose('Phone gift par baat karenge','Yes')">Yes, baat karenge ❤️</button>
+      <button class="no" onclick="showPage(5)">No</button>
+    </div>
+  </section>
+
+  <section id="page5" class="hidden">
+    <div class="emoji">💙</div>
+    <h1>Theek hai, Papa</h1>
+    <p>Main aapki baat samajhne ki koshish karunga. Jab aapko sahi lage, hum dobara baat kar sakte hain. ❤️</p>
+    <div class="buttons">
+      <button class="yes" onclick="choose('Dobara baat karenge','Yes')">Theek hai ❤️</button>
+      <button class="no" onclick="choose('Abhi nahi','No')">Abhi nahi</button>
+    </div>
+  </section>
+
+  <section id="done" class="hidden">
+    <div class="emoji" id="doneEmoji">🎉</div>
+    <h1 id="doneTitle">Congratulations!</h1>
+    <p id="doneText">Thank you, Papa! ❤️</p>
+    <div class="result" id="resultBox"></div>
+    <p class="small">Papa ka jawab Netlify par save hoga; tum Netlify dashboard ke Forms section mein dekh sakte ho.</p>
+    <div class="buttons"><button class="yes" onclick="location.reload()">Start again</button></div>
+  </section>
+</main>
+<!-- Netlify detects this form during deployment and stores responses in the site's Forms area. -->
+<form name="gift-response" method="POST" data-netlify="true" hidden>
+  <input type="hidden" name="form-name" value="gift-response">
+  <input type="text" name="choice">
+  <input type="text" name="answer">
+</form>
+<script>
+  function showPage(n) {
+    document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
+    document.getElementById('page'+n).classList.remove('hidden');
+  }
+  function choose(choice, answer) {
+    document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
+    document.getElementById('done').classList.remove('hidden');
+    const positive = answer === 'Yes';
+    document.getElementById('doneEmoji').textContent = positive ? '🎉❤️' : '💙';
+    document.getElementById('doneTitle').textContent = positive ? 'Congratulations!' : 'Theek hai ❤️';
+    document.getElementById('doneText').textContent = positive
+      ? 'Thank you, Papa! Meri request sunne ke liye bahut-bahut shukriya. ❤️'
+      : 'Thank you, Papa, honestly jawab dene ke liye. Hum baad mein araam se baat kar sakte hain.';
+    document.getElementById('resultBox').textContent = 'Choice: ' + choice + ' — ' + answer + ' | Jawab bheja ja raha hai…';
+    const payload = new URLSearchParams({ 'form-name': 'gift-response', choice: choice, answer: answer });
+    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: payload.toString() })
+      .then(response => {
+        if (!response.ok) throw new Error('Submit failed');
+        document.getElementById('resultBox').textContent = 'Choice: ' + choice + ' — ' + answer + ' | Jawab save ho gaya ❤️';
+      })
+      .catch(() => {
+        document.getElementById('resultBox').textContent = 'Choice: ' + choice + ' — ' + answer + ' | Jawab save nahi hua. Site ko updated ZIP se dobara deploy karo.';
+      });
+  }
+</script>
+</body>
+</html>
